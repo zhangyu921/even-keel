@@ -1,4 +1,4 @@
-export default function FamilyLayout({
+export default function FamilySettingsLayout({
   children,
 }: {
   children: React.ReactNode;

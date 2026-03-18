@@ -4,8 +4,8 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { joinFamilySchema, type JoinFamilyInput } from "@/lib/validations";
-import { joinFamily } from "../actions";
+import { createFamilySchema, type CreateFamilyInput } from "@/lib/validations";
+import { createFamily } from "../actions";
 import {
   Card,
   CardContent,
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-export default function JoinFamilyPage() {
+export default function CreateFamilyPage() {
   const [serverError, setServerError] = useState<string>();
   const [isPending, startTransition] = useTransition();
 
@@ -26,14 +26,14 @@ export default function JoinFamilyPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<JoinFamilyInput>({
-    resolver: zodResolver(joinFamilySchema),
+  } = useForm<CreateFamilyInput>({
+    resolver: zodResolver(createFamilySchema),
   });
 
   const onSubmit = handleSubmit((data) => {
     setServerError(undefined);
     startTransition(async () => {
-      const result = await joinFamily(data);
+      const result = await createFamily(data);
       if (result?.error) {
         setServerError(result.error);
       }
@@ -43,14 +43,15 @@ export default function JoinFamilyPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Join a family</CardTitle>
+        <CardTitle className="text-lg">Create a family</CardTitle>
         <CardDescription>
-          Enter the invite code shared by your family member
+          Start tracking your household finances together. You can invite your
+          partner later.
         </CardDescription>
       </CardHeader>
 
       <CardContent>
-        <form id="join-family-form" onSubmit={onSubmit} className="grid gap-4">
+        <form id="create-family-form" onSubmit={onSubmit} className="grid gap-4">
           {serverError && (
             <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {serverError}
@@ -58,36 +59,34 @@ export default function JoinFamilyPage() {
           )}
 
           <div className="grid gap-1.5">
-            <Label htmlFor="inviteCode">Invite code</Label>
+            <Label htmlFor="name">Family name</Label>
             <Input
-              id="inviteCode"
-              placeholder="Paste your invite code here"
+              id="name"
+              placeholder="e.g. The Smiths, Our Home"
               autoComplete="off"
               autoFocus
-              aria-invalid={!!errors.inviteCode}
-              {...register("inviteCode")}
+              aria-invalid={!!errors.name}
+              {...register("name")}
             />
-            {errors.inviteCode && (
-              <p className="text-xs text-destructive">
-                {errors.inviteCode.message}
-              </p>
+            {errors.name && (
+              <p className="text-xs text-destructive">{errors.name.message}</p>
             )}
           </div>
 
           <Button type="submit" size="lg" className="mt-1" disabled={isPending}>
-            {isPending ? "Joining…" : "Join family"}
+            {isPending ? "Creating…" : "Create family"}
           </Button>
         </form>
       </CardContent>
 
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">
-          Want to start fresh?{" "}
+          Have an invite code?{" "}
           <Link
-            href="/family/create"
+            href="/settings/family/join"
             className="font-medium text-primary hover:underline"
           >
-            Create a new family
+            Join an existing family
           </Link>
         </p>
       </CardFooter>

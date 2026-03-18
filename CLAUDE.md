@@ -16,12 +16,16 @@ EvenKeel 是一个家庭财富追踪工具，让夫妻双方共同管理、随�
 
 ## 数据模型
 
-- **User** — 用户，属于一个 Family，有 ADMIN/MEMBER 角色
-- **Family** — 家庭，通过 inviteCode 邀请成员加入，所有数据隔离在家庭维度
-- **Account** — 账户（银行/信用卡/电子钱包/投资/房产/负债/其他），属于 Family
+- **User** — 用户，可选属于一个 Family，有 ADMIN/MEMBER 角色
+- **Family** — 家庭（可选），通过 inviteCode 邀请成员加入，作为聚合视图让成员看到彼此资产
+- **Account** — 账户（银行/信用卡/电子钱包/投资/房产/负债/其他），**属于 User（个人）**
 - **BalanceRecord** — 余额记录，某个用户在某时间点记录的某账户余额
 
-核心设计：没有"月度周期"概念，任何时候可以更新任意账户。每个账户的"当前余额"= 最新一条 BalanceRecord。
+核心设计：
+- 账户归属个人，反映现实中资产落在个人名下
+- Family 是可选的聚合视图，让家庭成员看到彼此的资产
+- 账户有 visibility（FAMILY/PRIVATE），默认 FAMILY 可见
+- Dashboard 支持家庭视图和个人视图切换
 
 ## 关键设计决策
 
@@ -40,17 +44,17 @@ src/
 │   │   ├── actions.ts      # register/login Server Actions
 │   │   ├── register/       # 注册页
 │   │   └── login/          # 登录页
-│   ├── family/             # 家庭设置流程
-│   │   ├── layout.tsx      # 居中卡片布局
-│   │   ├── page.tsx        # 选择创建/加入
-│   │   ├── actions.ts      # createFamily/joinFamily Server Actions
-│   │   ├── create/         # 创建家庭页
-│   │   └── join/           # 加入家庭页
 │   ├── api/auth/           # NextAuth API 路由
-│   ├── dashboard/          # 主面板（占位，会检查 family 状态）
+│   ├── dashboard/          # 主面板（空状态引导 + 账户列表）
 │   ├── accounts/           # (待实现) 账户管理
 │   ├── analysis/           # (待实现) 分析页
-│   └── settings/           # (待实现) 设置页
+│   ├── settings/           # 设置页
+│   │   └── family/         # 家庭设置
+│   │       ├── layout.tsx  # 居中卡片布局
+│   │       ├── page.tsx    # 家庭管理/创建选择
+│   │       ├── actions.ts  # createFamily/joinFamily
+│   │       ├── create/     # 创建家庭页
+│   │       └── join/       # 加入家庭页
 ├── components/
 │   └── ui/                 # shadcn/ui 组件 (button, input, label, card)
 ├── lib/
@@ -68,10 +72,11 @@ src/
 - [x] NextAuth v5 认证配置
 - [x] 路由保护 (proxy.ts)
 - [x] 注册/登录页面 ✅ 2026-03-18
-- [x] 创建家庭/加入家庭流程 ✅ 2026-03-18
-- [ ] Dashboard 主面板
+- [x] 家庭设置功能（/settings/family）✅ 2026-03-18
+- [x] Dashboard 空状态引导 ✅ 2026-03-18
 - [ ] 账户管理 CRUD
 - [ ] 余额更新功能（核心）
+- [ ] Dashboard 双视图（家庭/个人）
 - [ ] 数据分析图表
 - [ ] AI 分析功能
 - [ ] 部署上线

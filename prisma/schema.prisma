@@ -21,11 +21,11 @@ model User {
   updatedAt      DateTime @updatedAt
 
   familyId String?
-  family   Family?  @relation(fields: [familyId], references: [id])
+  family   Family?    @relation(fields: [familyId], references: [id])
   role     FamilyRole @default(MEMBER)
 
-  createdAccounts  Account[]       @relation("AccountCreator")
-  balanceRecords   BalanceRecord[] @relation("RecordCreator")
+  accounts       Account[]       @relation("AccountOwner")
+  balanceRecords BalanceRecord[] @relation("RecordCreator")
 
   @@index([email])
   @@index([familyId])
@@ -47,8 +47,7 @@ model Family {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  members  User[]
-  accounts Account[]
+  members User[]
 }
 
 // ============================================================
@@ -56,24 +55,23 @@ model Family {
 // ============================================================
 
 model Account {
-  id        String      @id @default(cuid())
-  name      String
-  type      AccountType
-  currency  String      @default("CNY")
-  icon      String?
-  isActive  Boolean     @default(true)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id         String      @id @default(cuid())
+  name       String
+  type       AccountType
+  currency   String      @default("CNY")
+  icon       String?
+  isActive   Boolean     @default(true)
+  visibility Visibility  @default(FAMILY)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
-  familyId    String
-  family      Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
-  createdById String
-  createdBy   User   @relation("AccountCreator", fields: [createdById], references: [id])
+  ownerId String
+  owner   User   @relation("AccountOwner", fields: [ownerId], references: [id])
 
   balanceRecords BalanceRecord[]
 
-  @@index([familyId])
-  @@index([familyId, isActive])
+  @@index([ownerId])
+  @@index([ownerId, isActive])
 }
 
 enum AccountType {
@@ -84,6 +82,11 @@ enum AccountType {
   REAL_ESTATE
   LIABILITY
   OTHER
+}
+
+enum Visibility {
+  FAMILY
+  PRIVATE
 }
 
 model BalanceRecord {
