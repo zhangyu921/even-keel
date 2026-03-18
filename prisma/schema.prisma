@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// Auth & Users
+// ============================================================
+
+model User {
+  id             String   @id @default(cuid())
+  name           String
+  email          String   @unique
+  hashedPassword String
+  avatar         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  familyId String?
+  family   Family?  @relation(fields: [familyId], references: [id])
+  role     FamilyRole @default(MEMBER)
+
+  createdAccounts  Account[]       @relation("AccountCreator")
+  balanceRecords   BalanceRecord[] @relation("RecordCreator")
+
+  @@index([email])
+  @@index([familyId])
+}
+
+enum FamilyRole {
+  ADMIN
+  MEMBER
+}
+
+// ============================================================
+// Family (multi-user household)
+// ============================================================
+
+model Family {
+  id         String   @id @default(cuid())
+  name       String
+  inviteCode String   @unique @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  members  User[]
+  accounts Account[]
+}
+
+// ============================================================
+// Accounts & Balance Records
+// ============================================================
+
+model Account {
+  id        String      @id @default(cuid())
+  name      String
+  type      AccountType
+  currency  String      @default("CNY")
+  icon      String?
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  familyId    String
+  family      Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User   @relation("AccountCreator", fields: [createdById], references: [id])
+
+  balanceRecords BalanceRecord[]
+
+  @@index([familyId])
+  @@index([familyId, isActive])
+}
+
+enum AccountType {
+  BANK
+  CREDIT_CARD
+  E_WALLET
+  INVESTMENT
+  REAL_ESTATE
+  LIABILITY
+  OTHER
+}
+
+model BalanceRecord {
+  id         String   @id @default(cuid())
+  amount     Decimal  @db.Decimal(15, 2)
+  note       String?
+  recordedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  accountId    String
+  account      Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  recordedById String
+  recordedBy   User    @relation("RecordCreator", fields: [recordedById], references: [id])
+
+  @@index([accountId])
+  @@index([accountId, recordedAt])
+  @@index([recordedAt])
+}
