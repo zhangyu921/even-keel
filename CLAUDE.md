@@ -40,15 +40,21 @@ src/
 │   │   ├── actions.ts      # register/login Server Actions
 │   │   ├── register/       # 注册页
 │   │   └── login/          # 登录页
+│   ├── family/             # 家庭设置流程
+│   │   ├── layout.tsx      # 居中卡片布局
+│   │   ├── page.tsx        # 选择创建/加入
+│   │   ├── actions.ts      # createFamily/joinFamily Server Actions
+│   │   ├── create/         # 创建家庭页
+│   │   └── join/           # 加入家庭页
 │   ├── api/auth/           # NextAuth API 路由
-│   ├── dashboard/          # 主面板（占位）
+│   ├── dashboard/          # 主面板（占位，会检查 family 状态）
 │   ├── accounts/           # (待实现) 账户管理
 │   ├── analysis/           # (待实现) 分析页
 │   └── settings/           # (待实现) 设置页
 ├── components/
 │   └── ui/                 # shadcn/ui 组件 (button, input, label, card)
 ├── lib/
-│   ├── auth.ts             # NextAuth v5 配置
+│   ├── auth.ts             # NextAuth v5 配置（session 包含 familyId/role）
 │   ├── prisma.ts           # Prisma Client 单例 (adapter 模式)
 │   └── validations.ts      # Zod 表单校验
 ├── proxy.ts                # 路由保护 (Next.js 16 新规范，替代 middleware.ts)
@@ -62,7 +68,7 @@ src/
 - [x] NextAuth v5 认证配置
 - [x] 路由保护 (proxy.ts)
 - [x] 注册/登录页面 ✅ 2026-03-18
-- [ ] 创建家庭/加入家庭流程
+- [x] 创建家庭/加入家庭流程 ✅ 2026-03-18
 - [ ] Dashboard 主面板
 - [ ] 账户管理 CRUD
 - [ ] 余额更新功能（核心）
