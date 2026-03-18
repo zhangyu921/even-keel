@@ -45,8 +45,12 @@ src/
 │   │   ├── register/       # 注册页
 │   │   └── login/          # 登录页
 │   ├── api/auth/           # NextAuth API 路由
-│   ├── dashboard/          # 主面板（空状态引导 + 账户列表）
-│   ├── accounts/           # (待实现) 账户管理
+│   ├── dashboard/          # 主面板（双视图：家庭/个人）
+│   ├── accounts/           # 账户管理
+│   │   ├── page.tsx        # 账户列表
+│   │   ├── actions.ts      # CRUD actions
+│   │   ├── new/            # 创建账户
+│   │   └── [id]/           # 账户详情 + 余额更新
 │   ├── analysis/           # (待实现) 分析页
 │   ├── settings/           # 设置页
 │   │   └── family/         # 家庭设置
@@ -74,12 +78,19 @@ src/
 - [x] 注册/登录页面 ✅ 2026-03-18
 - [x] 家庭设置功能（/settings/family）✅ 2026-03-18
 - [x] Dashboard 空状态引导 ✅ 2026-03-18
-- [ ] 账户管理 CRUD
-- [ ] 余额更新功能（核心）
-- [ ] Dashboard 双视图（家庭/个人）
+- [x] 账户管理 CRUD ✅ 2026-03-18
+- [x] 余额更新功能（核心）✅ 2026-03-18
+- [x] Dashboard 双视图（家庭/个人）✅ 2026-03-18
+- [x] 部署上线 ✅ 2026-03-18
 - [ ] 数据分析图表
 - [ ] AI 分析功能
-- [ ] 部署上线
+
+## 部署信息
+
+- **线上地址**: https://even-keel.vercel.app
+- **托管平台**: Vercel
+- **数据库**: Neon PostgreSQL (serverless)
+- **环境变量**: `DATABASE_URL`, `AUTH_SECRET`（仅在 Vercel 配置）
 
 ## 常用命令
 
