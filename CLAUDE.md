@@ -34,20 +34,25 @@ EvenKeel 是一个家庭财富追踪工具，让夫妻双方共同管理、随�
 
 ```
 src/
-├── app/                    # Next.js App Router 页面
+├── app/
+│   ├── (auth)/             # 认证相关页面（共用居中布局）
+│   │   ├── layout.tsx      # 居中卡片布局
+│   │   ├── actions.ts      # register/login Server Actions
+│   │   ├── register/       # 注册页
+│   │   └── login/          # 登录页
 │   ├── api/auth/           # NextAuth API 路由
-│   ├── dashboard/          # (待实现) 主面板
+│   ├── dashboard/          # 主面板（占位）
 │   ├── accounts/           # (待实现) 账户管理
 │   ├── analysis/           # (待实现) 分析页
 │   └── settings/           # (待实现) 设置页
 ├── components/
-│   └── ui/                 # shadcn/ui 组件
+│   └── ui/                 # shadcn/ui 组件 (button, input, label, card)
 ├── lib/
 │   ├── auth.ts             # NextAuth v5 配置
 │   ├── prisma.ts           # Prisma Client 单例 (adapter 模式)
 │   └── validations.ts      # Zod 表单校验
-├── middleware.ts            # 路由保护
-└── generated/prisma/        # Prisma 7 生成的 Client (gitignored)
+├── proxy.ts                # 路由保护 (Next.js 16 新规范，替代 middleware.ts)
+└── generated/prisma/       # Prisma 7 生成的 Client (gitignored)
 ```
 
 ## 当前进度
@@ -55,8 +60,8 @@ src/
 - [x] 项目初始化 + 依赖安装
 - [x] 数据模型设计 + 数据库就绪
 - [x] NextAuth v5 认证配置
-- [x] 路由保护 middleware
-- [ ] 注册/登录页面
+- [x] 路由保护 (proxy.ts)
+- [x] 注册/登录页面 ✅ 2026-03-18
 - [ ] 创建家庭/加入家庭流程
 - [ ] Dashboard 主面板
 - [ ] 账户管理 CRUD
