@@ -34,7 +34,7 @@ export const accountSchema = z.object({
     "LIABILITY",
     "OTHER",
   ]),
-  currency: z.string().default("CNY"),
+  currency: z.string().min(1),
   icon: z.string().optional(),
 });
 
